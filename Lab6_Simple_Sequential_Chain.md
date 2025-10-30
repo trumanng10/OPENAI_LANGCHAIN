@@ -1,4 +1,4 @@
-# Lab: Two-Stage LangChain — Code Generator → Code Explainer (Updated: 9 Sep 2025)
+# Lab: Two-Stage LangChain (Updated: 9 Sep 2025)
 
 ## Learning Objectives
 
