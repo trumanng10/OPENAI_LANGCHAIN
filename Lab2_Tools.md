@@ -143,7 +143,14 @@ print("\n" + response.output_text)
 
 The model now processes the function output and generates the final response.
 You should see something like:
-
+```python
+# Extract text field from ResponseOutputMessage content
+for item in response.output:
+    if hasattr(item, 'content') and item.content:
+        for content_item in item.content:
+            if hasattr(content_item, 'text'):
+                print(content_item.text)
+```
 ```
 Final output:
 {
