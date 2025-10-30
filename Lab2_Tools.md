@@ -113,6 +113,4 @@ print("\n" + response.output_text)
 You have successfully built and executed a function-calling example in OpenAI using Google Colab.
 This lab demonstrates how **AI Agents** interact with external tools and data in a secure, controlled manner — the foundation of modern Agentic AI workflows.
 
----
 
-Would you like me to add **Lab 3: Custom Tool Building (e.g., Weather or Finance Tool)** next, continuing this series?
