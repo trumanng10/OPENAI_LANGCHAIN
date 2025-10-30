@@ -1,8 +1,3 @@
-Here’s the complete **Lab 2: Tools for OpenAI (Function Calling)** guide formatted for your Google Colab course module.
-No environment setup or prerequisites — it starts directly from the tool-calling implementation example.
-
----
-
 # **Lab 2: Tools for OpenAI (Function Calling)**
 
 ## **Objective**
