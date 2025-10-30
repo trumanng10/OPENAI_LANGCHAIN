@@ -66,7 +66,7 @@ def safe_tail(value, n=4):
 
 print("OPENAI_API_KEY:", safe_tail(os.environ.get("OPENAI_API_KEY")))
 print("PINECONE_API_KEY:", safe_tail(os.environ.get("PINECONE_API_KEY")))
-print("PINECONE_ENV:", os.environ.get("PINECONE_ENV")))
+print("PINECONE_ENV:", os.environ.get("PINECONE_ENV"))
 ```
 
 > ✅ **Tip:** Never expose full API keys in printed output or version control.
