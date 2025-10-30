@@ -151,12 +151,6 @@ for item in response.output:
             if hasattr(content_item, 'text'):
                 print(content_item.text)
 ```
-```
-Final output:
-{
-  "output_text": "Aquarius: Next Tuesday you will befriend a baby otter."
-}
-```
 
 ---
 
