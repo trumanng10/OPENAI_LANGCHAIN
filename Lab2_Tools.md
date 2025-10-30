@@ -1,76 +1,54 @@
-# ⚙️ **Lab 2 — Tools for OpenAI (Function Calling / Tool Invocation)**
+Here’s the complete **Lab 2: Tools for OpenAI (Function Calling)** guide formatted for your Google Colab course module.
+No environment setup or prerequisites — it starts directly from the tool-calling implementation example.
 
-## 🎯 **Lab Objectives**
+---
 
+# **Lab 2: Tools for OpenAI (Function Calling)**
+
+## **Objective**
+
+This lab introduces the concept of **Tool Calling (Function Calling)** in OpenAI models.
 By the end of this lab, participants will be able to:
 
-1. Understand the concept of **Function Calling / Tool Calling** and its role in Agentic AI systems.
-2. Define and register **custom tools (functions)** that allow OpenAI models to interact with external logic or APIs.
-3. Invoke a tool dynamically based on model reasoning (e.g., “get horoscope” function).
-4. Capture and process **function_call outputs** before feeding results back to the model.
-5. Understand how multi-turn **input lists (chat context)** manage conversation state and data flow.
+1. Understand how function calling enables models to interact with external systems.
+2. Define callable tools in Python for dynamic data retrieval or automation.
+3. Execute and integrate function call outputs into model responses using the OpenAI SDK.
+4. Extend the technique to build custom tools (e.g., for weather, finance, or HR data).
 
 ---
 
-## 🧩 **Scenario Overview**
+## **Lab Steps**
 
-Modern LLMs can now **call tools** to extend their abilities — for example, retrieving live data or triggering business logic.
-You’ll create a working demo where GPT-5 uses a custom Python function (`get_horoscope`) to return a user’s horoscope automatically, using OpenAI’s **function calling interface**.
+### **Step 1: Understanding Tool Calling**
 
----
+Tool (Function) calling gives OpenAI models controlled access to external functionalities or APIs.
+The model can decide when and how to invoke these tools to retrieve data or perform actions.
 
-## 🔧 **Concept Primer**
+**Use Cases:**
 
-> **Function Calling = Tool Access for LLMs**
-> It allows the model to identify when an external function is required, generate structured arguments (JSON), and receive real-time data to complete a response.
+* Getting today’s weather for a specific location
+* Accessing account details for a user
+* Issuing a refund for a customer
+* Generating custom data like a horoscope or report
 
-Typical tool examples:
+Reference:
 
-* `get_weather(location)` → returns today’s forecast
-* `get_account_balance(user_id)` → fetches account details
-* `issue_refund(order_id)` → performs refund operation
-
-**References:**
-
-* [OpenAI Function Calling Guide](https://platform.openai.com/docs/guides/function-calling)
-* [LangChain OpenAI Integration Docs](https://python.langchain.com/docs/integrations/chat/openai/)
+* [Function Calling Documentation](https://platform.openai.com/docs/guides/function-calling)
+* [LangChain Integration](https://python.langchain.com/docs/integrations/chat/openai/)
 
 ---
 
-## 🧠 **Step-by-Step Lab Guide**
+### **Step 2: Create the Python Script**
 
-### **Section 0 — Set Up the Environment**
-
-Before starting, ensure you have:
-
-* Python 3.10 or Google Colab
-* The `openai` library (≥ 1.40.0)
-* A valid OpenAI API key stored in `.env`
-
-```python
-!pip install -U openai>=1.40.0 python-dotenv
-```
-
----
-
-### **Section 1 — Import Modules and Initialize the Client**
+In Google Colab, create a new code cell and paste the following:
 
 ```python
 from openai import OpenAI
 import json
 
 client = OpenAI()
-```
 
-✅ This creates a connection object for sending requests to OpenAI models.
-
----
-
-### **Section 2 — Define the Tool (Function)**
-
-Here we tell the model what tools it can call.
-
-```python
+# 1. Define a list of callable tools for the model
 tools = [
     {
         "type": "function",
@@ -89,20 +67,11 @@ tools = [
     },
 ]
 
+# 2. Define the function to perform the task
 def get_horoscope(sign):
     return f"{sign}: Next Tuesday you will befriend a baby otter."
-```
 
-🔹 The `tools` list defines a callable function schema the model can understand.
-🔹 The `get_horoscope` Python function performs the actual logic.
-
----
-
-### **Section 3 — Initialize Conversation Input**
-
-We store all messages (user and model) in an array for multi-turn context.
-
-```python
+# 3. Create a conversation input
 input_list = [
     {"role": "user", "content": "What is my horoscope? I am an Aquarius."}
 ]
@@ -110,51 +79,52 @@ input_list = [
 
 ---
 
-### **Section 4 — Invoke the Model with Tool Access**
-
-Now we give GPT-5 access to the tool and observe its response.
+### **Step 3: Send Request to the Model with Tools Defined**
 
 ```python
+# 4. Send input with tool definition
 response = client.responses.create(
     model="gpt-5",
     tools=tools,
     input=input_list,
 )
 
-# Append the model's output to conversation
+# Save function call outputs for next requests
 input_list += response.output
 ```
 
-✅ Expected: The model will decide to call `get_horoscope` and produce a `function_call` message.
+Run this cell — the model may produce a **function call suggestion** (e.g., `get_horoscope`).
 
 ---
 
-### **Section 5 — Process Function Calls**
-
-If the model requested `get_horoscope`, execute the function and return its output as JSON.
+### **Step 4: Execute the Tool Function**
 
 ```python
+# 5. Execute the function logic for get_horoscope
 for item in response.output:
     if item.type == "function_call":
         if item.name == "get_horoscope":
-            horoscope = get_horoscope(json.loads(item.arguments)["sign"])
+            horoscope = get_horoscope(json.loads(item.arguments))
+
+            # Provide function result to model
             input_list.append({
                 "type": "function_call_output",
                 "call_id": item.call_id,
-                "output": json.dumps({"horoscope": horoscope})
+                "output": json.dumps({
+                  "horoscope": horoscope
+                })
             })
+
+print("Final input:")
+print(input_list)
 ```
 
 ---
 
-### **Section 6 — Generate the Final Model Response**
-
-Now that the function output exists, send it back to the model to get a final human-readable answer.
+### **Step 5: Return the Model’s Final Response**
 
 ```python
-print("Final input:")
-print(input_list)
-
+# 6. Model produces the final result based on the tool output
 response = client.responses.create(
     model="gpt-5",
     instructions="Respond only with a horoscope generated by a tool.",
@@ -167,49 +137,42 @@ print(response.model_dump_json(indent=2))
 print("\n" + response.output_text)
 ```
 
-✅ **Expected Output:**
-A horoscope generated from the tool, for example:
+---
+
+### **Step 6: Observe the Output**
+
+The model now processes the function output and generates the final response.
+You should see something like:
 
 ```
-Aquarius: Next Tuesday you will befriend a baby otter.
+Final output:
+{
+  "output_text": "Aquarius: Next Tuesday you will befriend a baby otter."
+}
 ```
 
 ---
 
-### **Section 7 — (Discussion & Learning Points)**
+### **Step 7: Discussion and Extension**
 
-1. The model didn’t “guess” the horoscope — it **decided** to call `get_horoscope()` via structured JSON.
-2. You handled the function call, then fed the output back into the conversation.
-3. This architecture mirrors **Agentic AI patterns** where the LLM delegates tasks to tools or APIs.
-4. You can extend this framework to connect real-world data sources — e.g., weather APIs, databases, payment systems.
+Try modifying the example:
 
----
+* Replace `get_horoscope` with a **custom function** such as:
 
-### **Section 8 — Deliverables**
-
-Students must submit:
-
-1. Screenshot showing successful tool call (`function_call` object visible).
-2. Printed final output (horoscope text).
-3. 2-line explanation of how function calling differs from simple prompting.
+  * `get_weather(location)`
+  * `get_stock_price(symbol)`
+  * `get_quote(topic)`
+* Change the system instruction to alter the model’s final phrasing.
+* Observe how the model dynamically decides when to use the tool.
 
 ---
 
-### **Section 9 — Instructor Checklist**
+### **Lab Completion**
 
-| ✅ Checkpoint                         | Expected Outcome                            |
-| ------------------------------------ | ------------------------------------------- |
-| `openai` package ≥ 1.40.0            | Confirmed                                   |
-| Tool list defined correctly          | `name`, `description`, `parameters` present |
-| Model invokes function call          | Output includes `function_call`             |
-| Function logic executes successfully | Returns a valid string                      |
-| Model responds with tool output      | Horoscope displayed in final output         |
+**End of Lab 2.**
+You have successfully built and executed a function-calling example in OpenAI using Google Colab.
+This lab demonstrates how **AI Agents** interact with external tools and data in a secure, controlled manner — the foundation of modern Agentic AI workflows.
 
 ---
 
-### **Section 10 — Optional Extensions**
-
-* Add more tools (e.g., `get_weather(city)`, `get_lucky_number()`).
-* Use `langchain.agents` to automate tool invocation within an Agent loop.
-* Chain multiple function calls (e.g., `get_date` → `get_weather` → `recommend_outfit`).
-* Log tool calls for observability and debugging.
+Would you like me to add **Lab 3: Custom Tool Building (e.g., Weather or Finance Tool)** next, continuing this series?
