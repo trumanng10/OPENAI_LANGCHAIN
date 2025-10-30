@@ -155,11 +155,10 @@ Pydantic version: 2.8.2
 
 ---
 
-### **Section 6 — Deliverables**
+### **Section 6 — Practice**
+Learning Outcome
 
-Learners must submit:
-
-1. Screenshot or log showing successful installation and version check.
+1. Obtain Temperature in Malaysia using 'gpt-5-mini' model, temperature: 0.4, max_token=256(HINT:  https://platform.openai.com/docs/models)
 2. Output from:
 
    ```python
