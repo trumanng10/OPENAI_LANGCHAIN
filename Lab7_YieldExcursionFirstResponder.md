@@ -1,4 +1,4 @@
-# Yield Excursion First-Responder Agent - Complete Lab Guide
+# Lab 7- Yield Excursion First-Responder Agent
 
 ## Google Colab Ready Code with Synthetic AOI Dataset
 
