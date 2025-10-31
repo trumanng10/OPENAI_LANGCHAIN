@@ -1,4 +1,4 @@
-# Lab 3: File Search with OpenAI Vector Stores (RAG-ready)
+# Lab 6: File Search with OpenAI Vector Stores (RAG-ready)
 
 ## Learning Objectives
 
